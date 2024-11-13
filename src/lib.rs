@@ -8,12 +8,18 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, (&str, usize)> {
-        if args.len() < 3 {
-            return Err(("not enough arguments - arguments passed:", args.len() - 1));
-        }
-        let query = args[1].to_owned();
-        let file_path = args[2].to_owned();
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
@@ -32,7 +38,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     } else {
         search(&config.query, &contents)
     };
-    results.iter().for_each(|line| println!("{line}"));
+    results.into_iter().for_each(|line| println!("{line}"));
     Ok(())
 }
 
