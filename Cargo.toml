@@ -1,6 +1,8 @@
 [package]
-name = "minigrep"
+name = "cmdcjones_minigrep"
+description = "A minimal grep clone from the Rust Book"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
